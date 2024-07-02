@@ -1,0 +1,41 @@
+<% layout("/layouts/boilerplate")%>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  function changeQuantity(amount) {
+      let quantityInput = document.getElementById('quantity');
+      let currentQuantity = parseInt(quantityInput.value);
+      let newQuantity = currentQuantity + amount;
+      if (newQuantity > 0) {
+          quantityInput.value = newQuantity;
+      }
+  }
+  function submitPayment() {
+            let quantity = parseInt(document.getElementById('quantity').value);
+            let price= parseFloat("<%= listing.price %>");
+            let totalAmount = price * quantity;
+
+            let options = {
+                "key": "", // Enter the Key ID generated from the Dashboard
+                "amount": totalAmount * 100, // Amount is in currency subunits. Default currency is INR. Hence, 100 refers to 100 paise
+                "currency": "INR",
+                "name": "<%= listing.title %>",
+                "description": "<%= listing.description %>",
+                "image": "<%= listing.image.url %>",
+                "handler": function (response){
+                    alert(response.razorpay_payment_id);
+                    // You can make an AJAX call here to save the payment details on your server
+                },
+                "prefill": {
+                    "name": "Customer Name",
+                    "email": "customer@example.com",
+                    "contact": "9999999999"
+                },
+                "theme": {
+                    "color": "#F37254"
+                }
+            };
+
+            let rzp1 = new Razorpay(options);
+            rzp1.open();
+        }
+    </script>
